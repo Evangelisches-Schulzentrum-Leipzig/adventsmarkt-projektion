@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
 body {
-    @apply bg-black text-white text-base;
+    @apply bg-black text-white text-base h-screen w-screen overflow-hidden;
     font-family: "Montserrat"
 }
