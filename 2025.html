@@ -12,38 +12,12 @@
         <title>Adventsmarkt Projektion 2025</title>
     </head>
     <body>
-        <div id="div-1" style="position: absolute; height: 120vh; width: 400px; left: 40vw; top: -10vh;" class="bg-red-700 blur-2xl"></div>
-        <div id="div-2" style="position: absolute; height: 120vh; width: 400px; right: 40vw; top: -10vh;" class="bg-red-700 blur-2xl"></div>
-        <p style="font-size: 50px; color: white; font-family: 'Montserrat'; position: absolute; text-align: center; display: none; justify-content: center; align-items: center; width: 100%; height: 100%; top: 230px;">Adventsmarkt<br>Evangelisches Schulzentrum Leipzig</p>
-        <img src="assets/img/outer-mask.svg" style="position: absolute; height: 100vh; width: 100vw; object-fit: contain;">
-        <img src="assets/img/windows-mask.svg" style="position: absolute; height: 100vh; width: 100vw; object-fit: contain;">
-        <!-- <img src="assets/img/outline.svg" style="position: absolute; height: 100vh; width: 100vw; object-fit: contain;"> -->
+        <img src="assets/img/outer-mask.svg" style="position: absolute; height: 100vh; width: 100vw; object-fit: contain; z-index: 10">
+        <img src="assets/img/windows-mask.svg" style="position: absolute; height: 100vh; width: 100vw; object-fit: contain; z-index: 20">
         <script>
             const { animate, svg, stagger } = anime;
-            animate('#div-1',{
-                left: '-500px',
-                delay: 500,
-                loop: true,
-                duration: 3000,
-                loopDelay: 4000
-            });
-            animate('div', {
-                backgroundColor: ['#ff0000', '#00ff00', '#0000ff'],
-                duration: 50000,
-                direction: 'alternate',
-                loop: true,
-                loopDelay: 1000,
-                easing: 'linear'
-            })
-            animate('#div-2',{
-                right: '-500px',
-                delay: 500,
-                loop: true,
-                duration: 3000,
-                loopDelay: 4000
-            });
             (async () => {
-                var svgElement = await fetch('assets/img/outline.svg')
+                var svgElement = await fetch('assets/img/color.svg')
                     .then(response => response.text())
                     .then(text => new DOMParser().parseFromString(text, 'image/svg+xml').documentElement);
                 svgElement.style.position = 'absolute';
@@ -52,30 +26,14 @@
                 svgElement.id = 'outline-svg';
                 document.body.appendChild(svgElement);
 
-                var svgElementWindows = await fetch('assets/img/windows-mask.svg')
-                    .then(response => response.text())
-                    .then(text => new DOMParser().parseFromString(text, 'image/svg+xml').documentElement);
-                svgElementWindows.style = "postion:absolute;height:100vh;width:100vw;filter: drop-shadow(0px 0px 0.5vmax #FF0000) drop-shadow(0px 0px 0.7vmax #FF0000) drop-shadow(0px 0px 1vmax #FF0000);";
-                svgElementWindows.querySelectorAll("path").forEach((path) => {
-                    path.style.stroke = "#ffff00";
-                    path.style.strokeWidth = "3";
-                });
-                svgElementWindows.id = 'outline-windows-svg';
-                document.body.appendChild(svgElementWindows);
-
-                animate(svg.createDrawable("#outline-svg path"), {
-                    draw: ['0 0', '0 1', '1 1'],
+                animate("#outline-svg path:not([fill=none])", {
+                    fill: "#00000000",
                     ease: 'inOutSine',
-                    duration: 40000,
-                    loop: true
-                });
-
-                animate(svg.createDrawable("#outline-windows-svg path"), {
-                    draw: ['0 0', '0 1', '1 1'],
-                    ease: 'inSine',
-                    duration: 4000,
-                    delay: stagger(200, {grid: [5, 2], from: 'center'}),
-                    loop: true
+                    duration: 200,
+                    delay: stagger(100 , { from: 'center' }),
+                    loop: true,
+                    alternate: true,
+                    reversed: true
                 });
             })();
         </script>
