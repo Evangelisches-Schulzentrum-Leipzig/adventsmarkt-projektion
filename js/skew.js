@@ -1,3 +1,5 @@
+// Credit: https://math.stackexchange.com/a/339033
+
 function adj(m) { // Compute the adjugate of m
     return [
         m[4] * m[8] - m[5] * m[7], m[2] * m[7] - m[1] * m[8], m[1] * m[5] - m[2] * m[4],
