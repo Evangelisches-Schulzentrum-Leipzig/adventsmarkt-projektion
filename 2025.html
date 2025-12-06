@@ -26,14 +26,39 @@
                 svgElement.id = 'outline-svg';
                 document.body.appendChild(svgElement);
 
+                // calculate maximum distance from center for all paths
+                const svgCenterX = svgElement.viewBox.baseVal.width / 2;
+                const svgCenterY = svgElement.viewBox.baseVal.height / 2;
+                const maxDistanceFromCenter = Math.hypot(0 - svgCenterX, 0 - svgCenterY);
+
+                document.querySelectorAll("#outline-svg path:not([fill=none]").forEach((path) => {
+                    var bbox = path.getBBox();
+                    var centerOfRect_X = bbox.x + bbox.width / 2;
+                    var centerOfRect_Y = bbox.y + bbox.height / 2;
+
+                    // Store center coordinates as data attributes
+                    path.dataset.centerX = centerOfRect_X;
+                    path.dataset.centerY = centerOfRect_Y;
+
+                    // Add index based on distance from SVG center
+                    const distanceFromCenter = Math.hypot(centerOfRect_X - svgCenterX, centerOfRect_Y - svgCenterY);
+                    path.dataset.distanceFromCenter = distanceFromCenter;
+                    path.dataset.normalizedDistanceFromCenter = distanceFromCenter / maxDistanceFromCenter;
+                });
+                
+                let distances = [...document.querySelectorAll("#outline-svg path:not([fill=none]")].map(p => [p, p.dataset.distanceFromCenter]).sort((a, b) => a[1] - b[1]);
+
+                for (let index = 0; index < [...document.querySelectorAll("#outline-svg path:not([fill=none]")].length; index++) {
+                    distances[index][0].dataset.distanceIndex = index;
+                }
+
                 animate("#outline-svg path:not([fill=none])", {
                     fill: "#00000000",
                     ease: 'inOutSine',
                     duration: 200,
-                    delay: stagger(100 , { from: 'center' }),
+                    delay: stagger(10 , { use: "data-distance-index" }),
                     loop: true,
                     alternate: true,
-                    reversed: true
                 });
             })();
         </script>
