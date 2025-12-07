@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="css/font.css">
         <link rel="stylesheet" href="css/css.css">
 
+        <script src="https://colorjs.io/dist/color.global.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
 
         <title>Adventsmarkt Projektion 2025</title>
@@ -17,7 +18,7 @@
         <script>
             const { animate, svg, stagger } = anime;
             (async () => {
-                var svgElement = await fetch('assets/img/color.svg')
+                var svgElement = await fetch('assets/img/colored-index.svg')
                     .then(response => response.text())
                     .then(text => new DOMParser().parseFromString(text, 'image/svg+xml').documentElement);
                 svgElement.style.position = 'absolute';
@@ -53,12 +54,24 @@
                     distances[index][0].dataset.distanceIndex = index;
                 }
 
-                animate("#outline-svg path:not([fill=none])", {
+                // convert colors from oklch to hex
+                document.querySelectorAll("#outline-svg path").forEach((path) => {
+                    if (path.style.fill && path.style.fill.startsWith("oklch")) {
+                        const oklch = path.style.fill;
+                        const hex = new Color(oklch).toString({format: 'hex'});
+                        console.log(oklch, "=>", hex);
+                        path.setAttribute("fill", hex);
+                        path.style.fill = "";
+                    }
+                });
+
+                animate("#outline-svg #shapes path", {
                     fill: "#00000000",
                     ease: 'inOutSine',
-                    duration: 200,
-                    delay: stagger(10 , { use: "data-distance-index" }),
+                    duration: 100,
+                    delay: stagger(10 , { use: "data-distance-index", from: "random" }),
                     loop: true,
+                    loopDelay: 1000,
                     alternate: true,
                 });
             })();
