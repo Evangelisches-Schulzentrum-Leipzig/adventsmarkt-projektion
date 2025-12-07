@@ -56,7 +56,7 @@
 
                 // convert colors from oklch to hex
                 document.querySelectorAll("#outline-svg path").forEach((path) => {
-                    if (path.style.fill && path.style.fill.startsWith("oklch")) {
+                    if (path.style.fill) {
                         const oklch = path.style.fill;
                         const hex = new Color(oklch).toString({format: 'hex'});
                         console.log(oklch, "=>", hex);
