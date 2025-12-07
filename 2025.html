@@ -32,7 +32,7 @@
                 const svgCenterY = svgElement.viewBox.baseVal.height / 2;
                 const maxDistanceFromCenter = Math.hypot(0 - svgCenterX, 0 - svgCenterY);
 
-                document.querySelectorAll("#outline-svg path:not([fill=none]").forEach((path) => {
+                document.querySelectorAll("#outline-svg path:not([fill=none])").forEach((path) => {
                     var bbox = path.getBBox();
                     var centerOfRect_X = bbox.x + bbox.width / 2;
                     var centerOfRect_Y = bbox.y + bbox.height / 2;
@@ -47,9 +47,9 @@
                     path.dataset.normalizedDistanceFromCenter = distanceFromCenter / maxDistanceFromCenter;
                 });
                 
-                let distances = [...document.querySelectorAll("#outline-svg path:not([fill=none]")].map(p => [p, p.dataset.distanceFromCenter]).sort((a, b) => a[1] - b[1]);
+                let distances = [...document.querySelectorAll("#outline-svg path:not([fill=none])")].map(p => [p, p.dataset.distanceFromCenter]).sort((a, b) => a[1] - b[1]);
 
-                for (let index = 0; index < [...document.querySelectorAll("#outline-svg path:not([fill=none]")].length; index++) {
+                for (let index = 0; index < [...document.querySelectorAll("#outline-svg path:not([stroke='black'])")].length; index++) {
                     distances[index][0].dataset.distanceIndex = index;
                 }
 
