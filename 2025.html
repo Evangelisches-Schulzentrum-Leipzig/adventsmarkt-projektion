@@ -9,72 +9,77 @@
 
         <script src="https://colorjs.io/dist/color.global.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
+        
+        <style>
+            html,body{
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            div#input-con {
+                position: absolute;
+                height: fit-content;
+                width: 100vw;
+                top: 0;
+                left: 0;
+                z-index: 100;
+            }
+
+            #con {
+                position:relative;
+                width: 100%;
+                height: 100%;
+                overflow: clip;
+            }
+            #svg-con {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                transform-origin: 0 0;
+                -webkit-transform-origin: 0 0;
+                -moz-transform-origin: 0 0;
+                -o-transform-origin: 0 0;
+                display: grid;
+                place-items: center;
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr;
+            }
+            svg, img {
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+                position: unset;
+                object-fit: contain;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
 
         <title>Adventsmarkt Projektion 2025</title>
     </head>
     <body>
-        <img src="assets/img/outer-mask.svg" style="position: absolute; height: 100vh; width: 100vw; object-fit: contain; z-index: 10">
-        <!-- <img src="assets/img/windows-mask.svg" style="position: absolute; height: 100vh; width: 100vw; object-fit: contain; z-index: 20"> -->
-        <script>
-            const { animate, svg, stagger } = anime;
-            (async () => {
-                var svgElement = await fetch('assets/img/colored-muted.svg')
-                    .then(response => response.text())
-                    .then(text => new DOMParser().parseFromString(text, 'image/svg+xml').documentElement);
-                svgElement.style.position = 'absolute';
-                svgElement.style.height = '100vh';
-                svgElement.style.width = '100vw';
-                svgElement.style.objectFit = 'contain';
-                svgElement.id = 'outline-svg';
-                document.body.appendChild(svgElement);
-
-                // calculate maximum distance from center for all paths
-                const svgCenterX = svgElement.viewBox.baseVal.width / 2;
-                const svgCenterY = svgElement.viewBox.baseVal.height / 2;
-                const maxDistanceFromCenter = Math.hypot(0 - svgCenterX, 0 - svgCenterY);
-
-                document.querySelectorAll("#outline-svg path:not([fill=none])").forEach((path) => {
-                    var bbox = path.getBBox();
-                    var centerOfRect_X = bbox.x + bbox.width / 2;
-                    var centerOfRect_Y = bbox.y + bbox.height / 2;
-
-                    // Store center coordinates as data attributes
-                    path.dataset.centerX = centerOfRect_X;
-                    path.dataset.centerY = centerOfRect_Y;
-
-                    // Add index based on distance from SVG center
-                    const distanceFromCenter = Math.hypot(centerOfRect_X - svgCenterX, centerOfRect_Y - svgCenterY);
-                    path.dataset.distanceFromCenter = distanceFromCenter;
-                    path.dataset.normalizedDistanceFromCenter = distanceFromCenter / maxDistanceFromCenter;
-                });
-                
-                let distances = [...document.querySelectorAll("#outline-svg path:not([fill=none])")].map(p => [p, p.dataset.distanceFromCenter]).sort((a, b) => a[1] - b[1]);
-
-                for (let index = 0; index < [...document.querySelectorAll("#outline-svg path:not([stroke='black'])")].length; index++) {
-                    distances[index][0].dataset.distanceIndex = index;
-                }
-
-                // convert colors from oklch to hex
-                document.querySelectorAll("#outline-svg path").forEach((path) => {
-                    if (path.style.fill) {
-                        const oklch = path.style.fill;
-                        const hex = new Color(oklch).toString({format: 'hex'});
-                        console.log(oklch, "=>", hex);
-                        path.setAttribute("fill", hex);
-                        path.style.fill = "";
-                    }
-                });
-
-                animate("#outline-svg #shapes path", {
-                    fill: "#00000000",
-                    ease: 'inOutSine',
-                    duration: 100,
-                    delay: stagger(10 , { use: "data-distance-index", from: "random" }),
-                    loop: true,
-                    loopDelay: 1000,
-                    alternate: true,
-                });
-            })();
-        </script>
+        <div id="con">
+            <div id="svg-con">
+                <img src="assets/img/outer-mask.svg" style="z-index: 10">
+                <img src="assets/img/windows-mask.svg" style="z-index: 20">
+            </div>
+        </div>
+        <div id="input-con">
+            <input type="range" name="x1" id="x1">
+            <input type="range" name="y1" id="y1">
+            <input type="range" name="x2" id="x2">
+            <input type="range" name="y2" id="y2">
+            <input type="range" name="x3" id="x3">
+            <input type="range" name="y3" id="y3">
+            <input type="range" name="x4" id="x4">
+            <input type="range" name="y4" id="y4">
+        </div>
+        <script src="js/skew-func.js"></script>
+        <script src="js/js.js"></script>
     </body>
 </html>
