@@ -1,15 +1,6 @@
 const { animate, svg, stagger } = anime;
 let corners = [0, 0, window.screen.width, 0, 0, window.screen.height, window.screen.width, window.screen.height];
-corners = [
-    -5,
-    -24,
-    3835,
-    -68,
-    0,
-    2142,
-    3845,
-    2126
-];
+// corners = [-5, -24, 3835, -68, 0, 2142, 3845, 2126];
 
 (async () => {
     var svgElement = await fetch('assets/img/colored-muted.svg')
