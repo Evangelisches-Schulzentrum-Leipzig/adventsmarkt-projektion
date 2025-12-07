@@ -45,15 +45,15 @@ let corners = [0, 0, window.screen.width, 0, 0, window.screen.height, window.scr
         }
     });
 
-    // animate("#outline-svg #shapes path", {
-    //     fill: "#00000000",
-    //     ease: 'inOutSine',
-    //     duration: 100,
-    //     delay: stagger(10 , { use: "data-distance-index", from: "random" }),
-    //     loop: true,
-    //     loopDelay: 1000,
-    //     alternate: true,
-    // });
+    animate("#outline-svg #shapes path", {
+        fill: "#00000000",
+        ease: 'inOutSine',
+        duration: 100,
+        delay: stagger(10 , { use: "data-distance-index", from: "random" }),
+        loop: true,
+        loopDelay: 1000,
+        alternate: true,
+    });
 
     transform2d(
         document.querySelector("div#svg-con"),
@@ -88,6 +88,8 @@ function update() {
         corners[6], corners[7]
     );
     for (var i = 0; i < 8; i += 1) {
-        document.querySelectorAll("div#input-con input")[i].value = corners[i];
+        corners.forEach((c, i) => {
+            document.querySelectorAll("div#input-con input")[i].value = c;
+        });
     }
 }
