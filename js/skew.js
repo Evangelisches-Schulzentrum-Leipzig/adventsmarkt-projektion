@@ -77,10 +77,51 @@ function transform2d(elt, x1, y1, x2, y2, x3, y3, x4, y4) {
     elt.style.transform = t;
 }
 
-let corners = [0, 0, 1920, -14, 0, 1074, 1920, 1080];
-function update() {
-    var box = document.querySelector("img");
-    transform2d(box, corners[0], corners[1], corners[2], corners[3], corners[4], corners[5], corners[6], corners[7]);
+let corners = [0, 0, window.screen.width, 0, 0, window.screen.height, window.screen.width, window.screen.height];
 
-}
-update()
+(async () => {
+    var svgElement = await fetch('assets/img/color.svg')
+        .then(response => response.text())
+        .then(text => new DOMParser().parseFromString(text, 'image/svg+xml').documentElement);
+    svgElement.style.position = 'unset';
+    svgElement.style.height = '100%';
+    svgElement.style.width = '100%';
+    svgElement.style.objectFit = 'contain';
+    svgElement.id = 'outline-svg';
+    document.querySelector('div#svg-con').appendChild(svgElement);
+
+    transform2d(
+        document.querySelector("div#svg-con"),
+        corners[0], corners[1],
+        corners[2], corners[3],
+        corners[4], corners[5],
+        corners[6], corners[7]
+    );
+    corners.forEach((c, i) => {
+        document.querySelectorAll("input")[i].value = c;
+    });
+
+    function update() {
+        var box = document.querySelector("div#svg-con");
+        transform2d(
+            box,
+            corners[0], corners[1],
+            corners[2], corners[3],
+            corners[4], corners[5],
+            corners[6], corners[7]
+        );
+        for (var i = 0; i < 8; i += 1) {
+            document.querySelectorAll("input")[i].value = corners[i];
+        }
+    }
+    for (let index = 0; index < 8; index++) {
+        const slider = document.querySelectorAll("input")[index];
+        slider.value = corners[index];
+        slider.min = -200;
+        slider.max = Math.max(window.screen.width, window.screen.height) + 200;
+        slider.addEventListener("input", (e) => {
+            corners[index] = parseInt(e.target.value);
+            update();
+        });
+    }
+})();
