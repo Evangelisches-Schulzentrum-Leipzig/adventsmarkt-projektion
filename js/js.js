@@ -17,7 +17,6 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
     // calculate maximum distance from center for all paths
     const svgCenterX = svgElement.viewBox.baseVal.width / 2;
     const svgCenterY = svgElement.viewBox.baseVal.height / 2;
-    const maxDistanceFromCenter = Math.hypot(0 - svgCenterX, 0 - svgCenterY);
 
     document.querySelectorAll("#outline-svg path:not([fill=none])").forEach((path) => {
         var bbox = path.getBBox();
@@ -31,11 +30,18 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
         // Add index based on distance from SVG center
         const distanceFromCenter = Math.hypot(centerOfRect_X - svgCenterX, centerOfRect_Y - svgCenterY);
         path.dataset.distanceFromCenter = distanceFromCenter;
-        path.dataset.normalizedDistanceFromCenter = distanceFromCenter / maxDistanceFromCenter;
     });
     
+    let centerXs = [...document.querySelectorAll("#outline-svg path:not([fill=none])")].map(p => [p, p.dataset.centerX]).sort((a, b) => a[1] - b[1]);
+    let centerYs = [...document.querySelectorAll("#outline-svg path:not([fill=none])")].map(p => [p, p.dataset.centerY]).sort((a, b) => a[1] - b[1]);
     let distances = [...document.querySelectorAll("#outline-svg path:not([fill=none])")].map(p => [p, p.dataset.distanceFromCenter]).sort((a, b) => a[1] - b[1]);
 
+    for (let index = 0; index < [...document.querySelectorAll("#outline-svg path:not([fill=none])")].length; index++) {
+        centerXs[index][0].dataset.centerXIndex = index;
+    }
+    for (let index = 0; index < [...document.querySelectorAll("#outline-svg path:not([fill=none])")].length; index++) {
+        centerYs[index][0].dataset.centerYIndex = index;
+    }
     for (let index = 0; index < [...document.querySelectorAll("#outline-svg path:not([stroke='black'])")].length; index++) {
         distances[index][0].dataset.distanceIndex = index;
     }
@@ -55,7 +61,7 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
         fill: "#00000000",
         ease: 'inOutSine',
         duration: 100,
-        delay: stagger(10 , { use: "data-distance-index", from: "random" }),
+        delay: stagger(10 , { use: "data-center-y-index", from: "first" }),
         loop: true,
         loopDelay: 1000,
         alternate: true,
