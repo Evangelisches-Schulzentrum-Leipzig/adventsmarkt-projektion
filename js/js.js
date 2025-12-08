@@ -2,6 +2,11 @@ const { animate, svg, stagger } = anime;
 let corners = [0, 0, window.screen.width, 0, 0, window.screen.height, window.screen.width, window.screen.height];
 // corners = [-5, -24, 3835, -68, 0, 2142, 3845, 2126];
 
+let BC;
+if (new URLSearchParams(window.location.search).get("corners-bc")) {
+    BC = new BroadcastChannel(new URLSearchParams(window.location.search).get("corners-bc"));
+}
+
 (async () => {
     var svgElement = await fetch('assets/img/colored-muted.svg')
         .then(response => response.text())
@@ -74,13 +79,35 @@ let corners = [0, 0, window.screen.width, 0, 0, window.screen.height, window.scr
         slider.addEventListener("input", (e) => {
             corners[index] = parseInt(e.target.value);
             update();
+            if (new URLSearchParams(window.location.search).get("corners-bc")) {
+                BC.postMessage({
+                    type: "corner-updated",
+                    cornerIndex: index,
+                    cornerValue: e.target.value
+                });
+            }
         });
+    }
+    if (new URLSearchParams(window.location.search).get("corners-bc")) {
+        BC.onmessage = (e) => {
+            if (e.data && e.data.type !== undefined && e.data.type == "corner-update" && e.data.cornerIndex !== undefined && e.data.cornerValue !== undefined) {
+                corners[e.data.cornerIndex] = parseInt(e.data.cornerValue);
+                update();
+            }
+            if (e.data && e.data.type !== undefined && e.data.type == "get-corners") {
+                BC.postMessage({
+                    type: "corners",
+                    corners: corners,
+                    min: -200,
+                    max: Math.max(window.screen.width, window.screen.height) + 200
+                });
+            }
+        };
     }
 })();
 
 function update() {
     var box = document.querySelector("div#svg-con");
-    console.log(corners);
     transform2d(
         box,
         corners[0], corners[1],

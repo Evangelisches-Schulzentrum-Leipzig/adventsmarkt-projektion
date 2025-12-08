@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="css/font.css">
+        <link rel="stylesheet" href="css/css.css">
+
+        <title>Skew Broadcast Channel</title>
+    </head>
+    <body>
+        <div id="input-con" style="display: grid; grid-template-columns: repeat(3, max-content); align-items: center; column-gap: 4px;">
+            <span></span>
+            <span>X</span>
+            <span>Y</span>
+            <span>Top Left</span>
+            <input type="range" name="x1" id="x1">
+            <input type="range" name="y1" id="y1">
+            <span>Top Right</span>
+            <input type="range" name="x2" id="x2">
+            <input type="range" name="y2" id="y2">
+            <span>Bottom Left</span>
+            <input type="range" name="x3" id="x3">
+            <input type="range" name="y3" id="y3">
+            <span>Bottom Right</span>
+            <input type="range" name="x4" id="x4">
+            <input type="range" name="y4" id="y4">
+        </div>
+        <div id="value-con" style="display: grid; grid-template-columns: repeat(3, max-content); align-items: center; column-gap: 4px;">
+            <span></span>
+            <span>X</span>
+            <span>Y</span>
+            <span>Top Left</span>
+            <input type="number" name="x1" id="val-x1">
+            <input type="number" name="y1" id="val-y1">
+            <span>Top Right</span>
+            <input type="number" name="x2" id="val-x2">
+            <input type="number" name="y2" id="val-y2">
+            <span>Bottom Left</span>
+            <input type="number" name="x3" id="val-x3">
+            <input type="number" name="y3" id="val-y3">
+            <span>Bottom Right</span>
+            <input type="number" name="x4" id="val-x4">
+            <input type="number" name="y4" id="val-y4">
+        </div>
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            const bcName = params.get("corners-bc");
+            if (bcName) {
+                const BC = new BroadcastChannel(bcName);
+                BC.onmessage = (e) => {
+                    if (e.data && e.data.type !== undefined && e.data.type === "corner-updated" && e.data.cornerIndex !== undefined && e.data.cornerValue !== undefined) {
+                        document.querySelectorAll("input[type=range]")[e.data.cornerIndex].value = e.data.cornerValue;
+                        document.querySelectorAll("input[type=number]")[e.data.cornerIndex].value = e.data.cornerValue;
+                    }
+                    if (e.data && e.data.type !== undefined && e.data.type === "corners") {
+                        document.querySelectorAll("input[type=range]").forEach((input, index) => {
+                            input.value = e.data.corners[index];
+                            input.min = e.data.min;
+                            input.max = e.data.max;
+                        });
+                        document.querySelectorAll("input[type=number]").forEach((input, index) => {
+                            input.value = e.data.corners[index];
+                            input.min = e.data.min;
+                            input.max = e.data.max;
+                        });
+                    }
+                };
+                document.querySelectorAll("input[type=range]").forEach((input, index) => {
+                    input.addEventListener("input", (e) => {
+                        BC.postMessage({
+                            type: "corner-update",
+                            cornerIndex: index,
+                            cornerValue: e.target.value
+                        });
+                        document.querySelectorAll("input[type=number]")[index].value = e.target.value;
+                        console.log(`Corner ${index} updated to ${e.target.value}`);
+                    });
+                });
+                document.querySelectorAll("input[type=number]").forEach((input, index) => {
+                    input.addEventListener("input", (e) => {
+                        BC.postMessage({
+                            type: "corner-update",
+                            cornerIndex: index,
+                            cornerValue: e.target.value
+                        });
+                        document.querySelectorAll("input[type=range]")[index].value = e.target.value;
+                        console.log(`Corner ${index} updated to ${e.target.value}`);
+                    });
+                });
+                setInterval(() => {
+                    BC.postMessage({
+                        type: "get-corners"
+                    });
+                }, 1000);
+            }
+        </script>
+    </body>
+</html>
