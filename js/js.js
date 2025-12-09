@@ -64,13 +64,13 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
     .add("#outline-svg #shapes path", {
         opacity: 0,
         ease: 'inOutSine',
-        duration: 10,
+        duration: 1000,
         delay: stagger(10 , { use: "data-center-y-index", from: "first" })
     })
     .add("#outline-svg #shapes path", {
         opacity: 1,
         ease: 'inOutSine',
-        duration: 10,
+        duration: 1000,
         delay: stagger(10 , { use: "data-distance-index", from: "center" })
     })
     .add({
@@ -93,26 +93,33 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
             { color: yellowColors, groupID: "a2-og" },
             { color: pinkColors, groupClass: "a1-og-awening-small" },
             { color: tomatoColors, groupClass: "a1-og-awening" },
-            { color: greenColors, groupID: "a1-og-bg" }
+            { color: greenColors, groupID: "a1-og-bg" },
+            { color: blueColors, groupID: "windows" }
         ]),
+    })
+    .add({
+        duration: 1000 * 30
     })
     .add("#outline-svg #shapes path", {
         opacity: 0,
         ease: 'inOutSine',
-        duration: 100,
+        duration: 1000,
         delay: stagger(10 , { use: "data-center-x-index", from: "first" })
     })
     .call(colorChange)
     .add("#outline-svg #shapes path", {
         opacity: 1,
         ease: 'inOutSine',
-        duration: 100,
+        duration: 1000,
         delay: stagger(10 , { use: "data-distance-index", from: "first" })
     })
     .add({
         duration: 200,
-        loop: 20,
+        loop: 200,
         onLoop: () => mapTreeColors(treeColors, "oklch(0.2255 0.0549 145)"),
+    })
+    .add({
+        duration: 1000 * 30
     });
 
     transform2d(
@@ -194,7 +201,8 @@ function colorChange() {
         { color: yellowColors, groupID: "a2-og" },
         { color: pinkColors, groupClass: "a1-og-awening-small" },
         { color: tomatoColors, groupClass: "a1-og-awening" },
-        { color: greenColors, groupID: "a1-og-bg" }
+        { color: greenColors, groupID: "a1-og-bg" },
+        { color: blueColors, groupID: "windows" }
     ]);
     mapTreeColors(treeColors, "oklch(0.2255 0.0549 145)");
 }
