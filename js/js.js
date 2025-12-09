@@ -1,4 +1,4 @@
-const { animate, svg, stagger } = anime;
+const { animate, svg, stagger, createTimeline } = anime;
 let corners = [0, 0, window.screen.width, 0, 0, window.screen.height, window.screen.width, window.screen.height];
 // corners = [-5, -24, 3835, -68, 0, 2142, 3845, 2126];
 
@@ -8,11 +8,12 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
 }
 
 (async () => {
-    var svgElement = await fetch('assets/img/colored-muted.svg')
+    var svgElement = await fetch('assets/img/color.svg')
         .then(response => response.text())
         .then(text => new DOMParser().parseFromString(text, 'image/svg+xml').documentElement);
     svgElement.id = 'outline-svg';
     document.querySelector('div#svg-con').appendChild(svgElement);
+    colorChange();
 
     // calculate maximum distance from center for all paths
     const svgCenterX = svgElement.viewBox.baseVal.width / 2;
@@ -57,14 +58,61 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
         }
     });
 
-    animate("#outline-svg #shapes path", {
-        fill: "#00000000",
+    var timeline = createTimeline({
+        loop: true,
+    })
+    .add("#outline-svg #shapes path", {
+        opacity: 0,
+        ease: 'inOutSine',
+        duration: 10,
+        delay: stagger(10 , { use: "data-center-y-index", from: "first" })
+    })
+    .add("#outline-svg #shapes path", {
+        opacity: 1,
+        ease: 'inOutSine',
+        duration: 10,
+        delay: stagger(10 , { use: "data-distance-index", from: "center" })
+    })
+    .add({
+        duration: 200,
+        loop: 20,
+        onLoop: () => mapColorArrayToGroups([
+            { color: pinkColors, groupID: "roof" },
+            { color: redColors, groupID: "roof #divider" },
+            { color: yellowColors, groupID: "roof #top-front" },
+            { color: blueColors, groupID: "roof #roof-divider" },
+            { color: pinkColors, groupID: "a3-og-bg" },
+            { color: tomatoColors, groupID: "aula-headstones" },
+            { color: redColors, groupID: "aula-top-bg" },
+            { color: tomatoColors, groupID: "aula-top-bg-stroke" },
+            { color: blueColors, groupID: "aula-awening" },
+            { color: yellowColors, groupID: "aula-divider" },
+            { color: limeColors, groupID: "aula-under" },
+            { color: greenColors, groupID: "a2-3-divider" },
+            { color: blueColors, groupID: "a2-og-awening" },
+            { color: yellowColors, groupID: "a2-og" },
+            { color: pinkColors, groupClass: "a1-og-awening-small" },
+            { color: tomatoColors, groupClass: "a1-og-awening" },
+            { color: greenColors, groupID: "a1-og-bg" }
+        ]),
+    })
+    .add("#outline-svg #shapes path", {
+        opacity: 0,
         ease: 'inOutSine',
         duration: 100,
-        delay: stagger(10 , { use: "data-center-y-index", from: "first" }),
-        loop: true,
-        loopDelay: 1000,
-        alternate: true,
+        delay: stagger(10 , { use: "data-center-x-index", from: "first" })
+    })
+    .call(colorChange)
+    .add("#outline-svg #shapes path", {
+        opacity: 1,
+        ease: 'inOutSine',
+        duration: 100,
+        delay: stagger(10 , { use: "data-distance-index", from: "first" })
+    })
+    .add({
+        duration: 200,
+        loop: 20,
+        onLoop: () => mapTreeColors(treeColors, "oklch(0.2255 0.0549 145)"),
     });
 
     transform2d(
@@ -126,4 +174,27 @@ function update() {
             document.querySelectorAll("div#input-con input")[i].value = c;
         });
     }
+}
+
+function colorChange() {
+    mapColorArrayToGroups([
+        { color: pinkColors, groupID: "roof" },
+        { color: redColors, groupID: "roof #divider" },
+        { color: yellowColors, groupID: "roof #top-front" },
+        { color: blueColors, groupID: "roof #roof-divider" },
+        { color: pinkColors, groupID: "a3-og-bg" },
+        { color: tomatoColors, groupID: "aula-headstones" },
+        { color: redColors, groupID: "aula-top-bg" },
+        { color: tomatoColors, groupID: "aula-top-bg-stroke" },
+        { color: blueColors, groupID: "aula-awening" },
+        { color: yellowColors, groupID: "aula-divider" },
+        { color: limeColors, groupID: "aula-under" },
+        { color: greenColors, groupID: "a2-3-divider" },
+        { color: blueColors, groupID: "a2-og-awening" },
+        { color: yellowColors, groupID: "a2-og" },
+        { color: pinkColors, groupClass: "a1-og-awening-small" },
+        { color: tomatoColors, groupClass: "a1-og-awening" },
+        { color: greenColors, groupID: "a1-og-bg" }
+    ]);
+    mapTreeColors(treeColors, "oklch(0.2255 0.0549 145)");
 }

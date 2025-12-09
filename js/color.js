@@ -3,10 +3,15 @@ var treeColors = [
     "oklch(0.35 0.12 150)",
     "oklch(0.45 0.15 155)",
     "oklch(0.5 0.16 158)"
-    // "oklch(0.4955 0.0896 126.19)",
-    // "oklch(0.6769 0.1492 118.43)",
-    // "oklch(0.8466 0.1311 117.39)",
-    // "oklch(0.9566 0.0462 115.18)"
+];
+var redColors = [
+    "oklch(0.348 0.111 17.0)",
+    "oklch(0.394 0.133 17.0)",
+    "oklch(0.445 0.151 17.0)",
+    "oklch(0.513 0.168 17.0)",
+    "oklch(0.599 0.184 17.0)",
+    "oklch(0.647 0.176 17.0)",
+    "oklch(0.699 0.166 17.0)"
 ];
 var blueColors = [
     "oklch(0.4 0.15 220)",
@@ -17,28 +22,32 @@ var blueColors = [
     "oklch(0.7 0.13 243)",
     "oklch(0.75 0.12 245)",
     "oklch(0.82 0.08 250)",
-
-    // "oklch(0.6759 0.2611 316.38)",
-    // "oklch(0.6759 0.2119 316.38)",
-    // "oklch(0.6759 0.1263 286.29)",
-
-    // "oklch(0.7407 0.1226 162.58)",
-    // "oklch(0.7896 0.0995 218.15)",
-    // "oklch(0.5663 0.1539 258.67)"
 ];
 var greenColors = [
-    "oklch(0.24 0.03 115)",
     "oklch(0.45 0.06 110)",
     "oklch(0.68 0.07 105)",
     "oklch(0.85 0.03 95)",
     "oklch(0.72 0.11 65)",
     "oklch(0.57 0.13 50)",
-    
-    // "oklch(0.8688 0.1427 144.6554)",
-    // "oklch(0.4777 0.0999 144.6554)",
-    // "oklch(0.4777 0.1512 144.6554)",
-    // "oklch(0.4777 0.1512 139.77)",
-    // "oklch(0.8546 0.1669 111.1)"
+];
+var yellowColors = [
+    "oklch(0.381 0.119 91.0)",
+    "oklch(0.431 0.140 91.0)",
+    "oklch(0.498 0.161 91.0)",
+    "oklch(0.588 0.183 91.0)",
+    "oklch(0.725 0.187 91.0)",
+    "oklch(0.780 0.171 91.0)",
+    "oklch(0.892 0.108 91.0)"
+];
+var limeColors = [
+    "oklch(0.331 0.111 120.0)",
+    "oklch(0.377 0.137 120.0)",
+    "oklch(0.428 0.161 120.0)",
+    "oklch(0.496 0.184 120.0)",
+    "oklch(0.585 0.205 120.0)",
+    "oklch(0.703 0.205 120.0)",
+    "oklch(0.761 0.186 120.0)",
+    "oklch(0.875 0.117 120.0)"
 ];
 var pinkColors = [
     "oklch(0.4 0.18 330)",
@@ -49,6 +58,15 @@ var pinkColors = [
     "oklch(0.65 0.2 355)",
     "oklch(0.7 0.18 0)",
     "oklch(0.75 0.15 5)"
+];
+var tomatoColors = [
+    "oklch(0.338 0.106 25.0)",
+    "oklch(0.384 0.130 25.0)",
+    "oklch(0.435 0.151 25.0)",
+    "oklch(0.503 0.172 25.0)",
+    "oklch(0.591 0.192 25.0)",
+    "oklch(0.657 0.183 25.0)",
+    "oklch(0.712 0.172 25.0)"
 ];
 
 (async () => {
@@ -62,37 +80,26 @@ var pinkColors = [
     svgElement.id = 'outline-svg';
     document.body.appendChild(svgElement);
 
-    // get all lowset groups with only paths as children
-    let groups = Array.from(svgElement.querySelectorAll("#shapes g")).filter(g => {
-        return Array.from(g.children).every(child => child.tagName === 'path');
-    });
-
-    groups.forEach((group, groupIndex) => {
-        let paths = Array.from(group.querySelectorAll("path"));
-        paths.forEach((path, pathIndex) => {
-            let colorArray;
-            if (groupIndex % 3 === 1) {
-                colorArray = blueColors;
-            } else if (groupIndex % 3 === 2) {
-                colorArray = pinkColors;
-            } else {
-                colorArray = greenColors;
-            }    
-            let color = colorArray[pathIndex % colorArray.length];
-            path.style.fill = color;
-        });
-    }); 
-    document.querySelectorAll("#shapes #trees g g").forEach((group, groupIndex) => {
-        let paths = Array.from(group.querySelectorAll("path"));
-        paths.forEach((path, pathIndex) => {
-            let colorArray = treeColors
-            let color = colorArray[pathIndex % colorArray.length];
-            path.style.fill = color;
-        });
-    }); 
-    document.querySelectorAll("#shapes #trees > g > path").forEach((path) => {
-        path.style.fill = "oklch(0.2255 0.0549 145)";
-    }); 
+    mapColorArrayToGroups([
+        { color: pinkColors, groupID: "roof" },
+        { color: redColors, groupID: "roof #divider" },
+        { color: yellowColors, groupID: "roof #top-front" },
+        { color: blueColors, groupID: "roof #roof-divider" },
+        { color: pinkColors, groupID: "a3-og-bg" },
+        { color: tomatoColors, groupID: "aula-headstones" },
+        { color: redColors, groupID: "aula-top-bg" },
+        { color: tomatoColors, groupID: "aula-top-bg-stroke" },
+        { color: blueColors, groupID: "aula-awening" },
+        { color: yellowColors, groupID: "aula-divider" },
+        { color: limeColors, groupID: "aula-under" },
+        { color: greenColors, groupID: "a2-3-divider" },
+        { color: blueColors, groupID: "a2-og-awening" },
+        { color: yellowColors, groupID: "a2-og" },
+        { color: pinkColors, groupClass: "a1-og-awening-small" },
+        { color: tomatoColors, groupClass: "a1-og-awening" },
+        { color: greenColors, groupID: "a1-og-bg" }
+    ]);
+    mapTreeColors(treeColors, "oklch(0.2255 0.0549 145)");
 })();
 
 function outputSVGWihtoutData() {
@@ -115,4 +122,96 @@ function outputSVGWihtoutData() {
 
     console.log(svgString);
     alert("SVG outputted to console without data attributes.");
+}
+
+for (var i = 0; i < 8; i++) {
+    switch (i) {
+        case 0:
+            var colorArray = treeColors; 
+            var colorString = "Tree Colors";
+            break;
+        case 1:
+            var colorArray = blueColors;
+            var colorString = "Blue Colors";
+            break;
+        case 2:
+            var colorArray = greenColors;   
+            var colorString = "Green Colors";
+            break;
+        case 3:
+            var colorArray = yellowColors;   
+            var colorString = "Yellow Colors";
+            break;
+        case 4:
+            var colorArray = pinkColors;   
+            var colorString = "Pink Colors";
+            break;
+        case 5:
+            var colorArray = limeColors;   
+            var colorString = "Lime Colors";
+            break;
+        case 6:
+            var colorArray = redColors;   
+            var colorString = "Red Colors";
+            break;
+        case 7:
+            var colorArray = tomatoColors;   
+            var colorString = "Tomato Colors";
+            break;
+    }
+
+
+    document.body.insertAdjacentHTML('beforeend', `<span style="font-family:monospace; font-size:20px;">${colorString}:</span><br>`);
+    for (const color of colorArray) {
+        document.body.insertAdjacentHTML('beforeend', `<div style="width:100px; height:100px; background-color:${new Color(color).toString({format: 'hex'})}; display:inline-block;"></div>`);
+    }
+    document.body.insertAdjacentHTML('beforeend', `<br>`);
+}
+
+/**
+ * @typedef {Object} ColorMapping
+ * @property {string[]} color - The color array in OKLCH format.
+ * @property {string|null} groupID - The SVG group ID to which this color should be applied.
+ * @property {string|null} groupClass - The SVG group class to which this color should be applied.
+ */
+/**
+ * @param {Array<ColorMapping>} mapping
+ */
+function mapColorArrayToGroups(mapping) {
+    mapping.forEach((map) => {
+        if (map.groupID) {
+            document.querySelectorAll(`#shapes #${map.groupID}`).forEach((group, groupIndex) => {
+                let paths = Array.from(group.querySelectorAll("path"));
+                paths.forEach((path, pathIndex) => {
+                    let colorArray = map.color;
+                    let color = colorArray[Math.floor(Math.random() * colorArray.length)];
+                    path.style.fill = color;
+                });
+            });
+        }
+        if (map.groupClass) {
+            document.querySelectorAll(`#shapes .${map.groupClass}`).forEach((group, groupIndex) => {
+                let paths = Array.from(group.querySelectorAll("path"));
+                paths.forEach((path, pathIndex) => {
+                    let colorArray = map.color;
+                    let color = colorArray[Math.floor(Math.random() * colorArray.length)];
+                    path.style.fill = color;
+                });
+            });
+        }
+    });
+}
+
+function mapTreeColors(leafColorArray, trunkColor) {
+    document.querySelectorAll("#shapes #trees g g").forEach((group, groupIndex) => {
+        let paths = Array.from(group.querySelectorAll("path"));
+        paths.forEach((path, pathIndex) => {
+            let colorArray = leafColorArray
+            let color = colorArray[Math.floor(Math.random() * colorArray.length)];
+            path.style.fill = color;
+        });
+    });
+    document.querySelectorAll("#shapes #trees > g > path").forEach((path) => {
+        path.style.fill = trunkColor;
+    });
 }
