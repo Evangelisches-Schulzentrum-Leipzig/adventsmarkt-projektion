@@ -2,7 +2,7 @@
 
 ## 2025
 ### Ideen Animation
-- Erscheinen Center oder Außen (Center), Links oder Rechts (X), Oben oder Unter (Y)
+- Erscheinen Center oder Außen (Center), Links oder Rechts (X), Oben oder Unten (Y)
 - Schriftzug Mask
 - Fotos/Symbole in Fenster
 - Andere Farbkombination/Wechsel
