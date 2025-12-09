@@ -2,6 +2,8 @@ const { animate, svg, stagger, createTimeline } = anime;
 let corners = [0, 0, window.screen.width, 0, 0, window.screen.height, window.screen.width, window.screen.height];
 // corners = [-5, -24, 3835, -68, 0, 2142, 3845, 2126];
 
+let colorMap;
+
 let BC;
 if (new URLSearchParams(window.location.search).get("corners-bc")) {
     BC = new BroadcastChannel(new URLSearchParams(window.location.search).get("corners-bc"));
@@ -76,26 +78,7 @@ if (new URLSearchParams(window.location.search).get("corners-bc")) {
     .add({
         duration: 200,
         loop: 20,
-        onLoop: () => mapColorArrayToGroups([
-            { color: pinkColors, groupID: "roof" },
-            { color: redColors, groupID: "roof #divider" },
-            { color: yellowColors, groupID: "roof #top-front" },
-            { color: blueColors, groupID: "roof #roof-divider" },
-            { color: pinkColors, groupID: "a3-og-bg" },
-            { color: tomatoColors, groupID: "aula-headstones" },
-            { color: redColors, groupID: "aula-top-bg" },
-            { color: tomatoColors, groupID: "aula-top-bg-stroke" },
-            { color: blueColors, groupID: "aula-awening" },
-            { color: yellowColors, groupID: "aula-divider" },
-            { color: limeColors, groupID: "aula-under" },
-            { color: greenColors, groupID: "a2-3-divider" },
-            { color: blueColors, groupID: "a2-og-awening" },
-            { color: yellowColors, groupID: "a2-og" },
-            { color: pinkColors, groupClass: "a1-og-awening-small" },
-            { color: tomatoColors, groupClass: "a1-og-awening" },
-            { color: greenColors, groupID: "a1-og-bg" },
-            { color: blueColors, groupID: "windows" }
-        ]),
+        onLoop: () => mapColorArrayToGroups(colorMap),
     })
     .add({
         duration: 1000 * 30
@@ -186,7 +169,7 @@ function update() {
 function colorChange() {
     switch (Math.floor(Math.random() * 4)) {
         case 0:
-            mapColorArrayToGroups([
+            colorMap = [
                 { color: pinkColors, groupID: "roof" },
                 { color: redColors, groupID: "roof #divider" },
                 { color: yellowColors, groupID: "roof #top-front" },
@@ -205,10 +188,10 @@ function colorChange() {
                 { color: tomatoColors, groupClass: "a1-og-awening" },
                 { color: greenColors, groupID: "a1-og-bg" },
                 { color: blueColors, groupID: "windows" }
-            ]);
+            ];
             break;
         case 1:
-            mapColorArrayToGroups([
+            colorMap = [
                 { color: redColors, groupID: "roof" },
                 { color: yellowColors, groupID: "roof #divider" },
                 { color: blueColors, groupID: "roof #top-front" },
@@ -227,10 +210,10 @@ function colorChange() {
                 { color: greenColors, groupClass: "a1-og-awening" },
                 { color: blueColors, groupID: "a1-og-bg" },
                 { color: pinkColors, groupID: "windows" }
-            ]);
+            ];
             break;
         case 2:
-            mapColorArrayToGroups([
+            colorMap = [
                 { color: yellowColors, groupID: "roof" },
                 { color: blueColors, groupID: "roof #divider" },
                 { color: pinkColors, groupID: "roof #top-front" },
@@ -249,10 +232,10 @@ function colorChange() {
                 { color: blueColors, groupClass: "a1-og-awening" },
                 { color: pinkColors, groupID: "a1-og-bg" },
                 { color: redColors, groupID: "windows" }
-            ]);
+            ];
             break;
         case 3:
-            mapColorArrayToGroups([
+            colorMap = [
                 { color: blueColors, groupID: "roof" },
                 { color: pinkColors, groupID: "roof #divider" },
                 { color: tomatoColors, groupID: "roof #top-front" },
@@ -271,10 +254,10 @@ function colorChange() {
                 { color: pinkColors, groupClass: "a1-og-awening" },
                 { color: redColors, groupID: "a1-og-bg" },
                 { color: yellowColors, groupID: "windows" }
-            ]);
+            ];
             break;
         case 4:
-            mapColorArrayToGroups([
+            colorMap = [
                 { color: pinkColors, groupID: "roof" },
                 { color: tomatoColors, groupID: "roof #divider" },
                 { color: redColors, groupID: "roof #top-front" },
@@ -293,8 +276,9 @@ function colorChange() {
                 { color: redColors, groupClass: "a1-og-awening" },
                 { color: yellowColors, groupID: "a1-og-bg" },
                 { color: blueColors, groupID: "windows" }
-            ]);
+            ];
             break;
     }
+    mapColorArrayToGroups(colorMap);
     mapTreeColors(treeColors, "oklch(0.2255 0.0549 145)");
 }
